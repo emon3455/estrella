@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+summary {
+  display: flex;
+}
+
+summary::after {
+  content: '';
+  width: 18px;
+  height: 18px;
+  background: url('https://img.icons8.com/fluency/48/expand-arrow.png') 100%;
+  background-size: cover;
+  margin-left: 10px;
+  transition: 0.2s;
+  position: absolute;
+  right: 8px;
+}
+
+details[open]>summary::after {
+  transform: rotate(180deg);
+}
+
+
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
