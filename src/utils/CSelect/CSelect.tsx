@@ -54,7 +54,7 @@ const CSelect = ({
         id={id}
         className={`${className} ${
           width ? width : "w-full"
-        }  border-0 border-dark-primary rounded-md outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent dark:bg-black/10`}
+        }  border-0 border-dark-primary rounded-md outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-black/10`}
         onChange={(selectedOptions:any) => onChange?.(selectedOptions)}
         classNamePrefix={classNamePrefix || "select"}
         closeMenuOnSelect={true}
@@ -75,11 +75,11 @@ const CSelect = ({
           option: (defaultStyles:any, state:any) => ({
             ...defaultStyles,
             zIndex: 9999,
-            backgroundColor: "#0C5164",
+            backgroundColor: "#1B2966",
             color: "#fff",
             height: "100%",
             "&:hover": {
-              backgroundColor: "#0D1526",
+              backgroundColor: "#14A8EC",
               color: "white",
             },
           }),
@@ -97,8 +97,8 @@ const CSelect = ({
             cursor: state.isDisabled ? "not-allowed" : "default",
             backgroundColor: "#fff",
             "&:hover": {
-              border: "2px solid #FBBF24",
-              outlineColor: "#FBBF24",
+              border: "2px solid #14A8EC",
+              outlineColor: "#14A8EC",
             },
             width: "100%",
           }),

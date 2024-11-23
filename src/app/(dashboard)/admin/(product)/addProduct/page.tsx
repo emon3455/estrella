@@ -7,7 +7,9 @@ const AddProductPage = () => {
       <h2 className="text-2xl font-bold text-center my-5">
         Add Your New Product Here
       </h2>
-      <AddProductForm />
+      <div className="max-w-2xl mx-auto">
+        <AddProductForm />
+      </div>
     </div>
   );
 };

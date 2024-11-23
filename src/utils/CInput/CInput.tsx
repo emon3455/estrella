@@ -95,7 +95,7 @@ const CInput = ({
           defaultValue={defaultValue}
           className={`${className} ${
             width ? width : "w-full"
-          }  border-2 border-dark-primary rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-amber-400 dark:bg-black/10 focus:border-transparent ${
+          }  border-2 border-dark-primary rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-secondary dark:bg-black/10 focus:border-transparent ${
             disabled && "opacity-20"
           } sm:placeholder-sm`}
           value={value}

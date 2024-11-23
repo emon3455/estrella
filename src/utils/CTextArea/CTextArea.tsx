@@ -54,7 +54,7 @@ const CTextArea = ({
         id={id}
         className={`${className && className} ${width ? width : "w-full"} ${
           height ? height : "h-20"
-        }  "rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"  ${
+        }  "rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-secondary focus:border-transparent"  ${
           disabled && "opacity-20 cursor-not-allowed"
         } border border-gray-200`}
         style={{
