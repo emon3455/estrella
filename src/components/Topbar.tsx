@@ -22,251 +22,170 @@ const Topbar = () => {
           </button>
 
           <div
-            className="absolute grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 z-40 py-4  left-0 w-[30rem] md:w-[40rem] lg:w-[65rem]  mt-1 origin-top-left bg-white divide-y divide-gray-100 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-300">
+            className="absolute grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 z-40 py-4  left-0 w-[30rem] md:w-[40rem] lg:w-[50rem]  mt-1 origin-top-left bg-white divide-y divide-gray-100 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-300">
             <div className="px-2 flex flex-col  ">
               <h1 className=" uppercase  text-black font-bold">Men</h1>
               <Link
                 className=" text-black  transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/ menHalfSleeveTShirt"}
+                href={"/shop"}
               >
-                T-shirt
+                Short sleeve t-shirt
               </Link>
               <Link
                 className=" text-black  transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menHalfSleeveTShirtRaglan"}
+                href={"/shop"}
               >
-                T-shirt (Raglan)
+               Long sleeve t-shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menHalfSleeveTShirtCutAndStitch"}
+                href={"/shop"}
               >
-                T-shirt (Cut & Stitch)
+               Polo shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menHalfSleeveTShirtSports"}
+                href={"/shop"}
               >
-                T-shirt (Sports Edition)
+                Sports jersey
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menHalfSleeveTShirtBlank"}
+                href={"/shop"}
               >
-                T-shirt (Blanks)
+                Dress shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menFullSleeveTShirt"}
+                href={"/shop"}
               >
-                Full Sleeve T-shirt
+                Casual shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menFullSleeveTShirtRaglan"}
+                href={"/shop"}
               >
-                Full Sleeve (Raglan)
+                Katua
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menFullSleeveTShirtCutAndStitch"}
-              >
-                Full Sleeve (Cut & Stitch)
-              </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menFullSleeveTShirtBlank"}
-              >
-                Full Sleeve (Blanks)
-              </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menWallet"}
-              >
-                Wallet
-              </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menBelt"}
-              >
-                Belt
-              </Link>
-            </div>
-            <div className="px-2 flex flex-col  ">
-              <h1 className=" uppercase  text-black font-bold">Men</h1>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menPanjabi"}
+                href={"/shop/"}
               >
                 Panjabi
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menShirt"}
+                href={"/shop"}
               >
-                Shirt
+               Pajama
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menPoloTShirt"}
+                href={"/shop/"}
               >
-                Polo T-shirt
+                Trouser
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menHoodie"}
+                href={"/shop/"}
               >
-                Hoodie
+                Cargo pant
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menJacket"}
+                href={"/shop/"}
               >
-                Jacket
+                Under wear
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menJeans"}
+                href={"/shop/"}
               >
-                Denim Jeans
+               Tank top
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menComfyTrouser"}
+                href={"/shop/"}
               >
-                Comfy Trouser
+                Sweat shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menSportsTrouser"}
+                href={"/shop/"}
               >
-                Sports Trouser
-              </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menJoggers"}
-              >
-                Joggers
-              </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menShorts"}
-              >
-                Shorts
-              </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menUnderwear"}
-              >
-                Underwear
-              </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/menSocks"}
-              >
-                Socks
+                Hoodie 
               </Link>
             </div>
+      
             <div className="px-2 flex flex-col  ">
-              <h1 className=" uppercase  text-black font-bold">women</h1>
+              <h1 className=" uppercase  text-black font-bold">Women</h1>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/womenKurtiTunicAndTops"}
+                href={"/shop/"}
               >
-                Kurti, Tunic & Tops
+                Comfy top bottom set
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/womenTShirt"}
+                href={"/shop/"}
               >
-                T-Shirt
+                Kurti, Tunic, & Tops 
               </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/womenComfyTrouser"}
-              >
-                Comfy Trouser
-              </Link>
+              
             </div>
-
             <div className="px-2 flex flex-col  ">
-              <h1 className=" uppercase  text-black font-bold">kids</h1>
+              <h1 className=" uppercase  text-black font-bold">Kids</h1>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/isKindsHalfSleeveTshirt"}
+                href={"/shop/"}
+              >
+              Top bottom set
+              </Link>
+              <Link
+                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
+                href={"/shop/"}
               >
                 T-shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/kidsMaggie"}
+                href={"/shop/"}
               >
-                Maggie
+                Polo shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/kidsHalfSleeveTShirtBlank"}
+                href={"/shop/"}
               >
-                Plain T-shirt
+                Sleeve less t-shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/kidsFullSleeveTShirt"}
+                href={"/shop/"}
               >
-                Full Sleeve T-shirt
+               3 Quarter shorts
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/kidsPoloTShirt"}
+                href={"/shop/"}
               >
-                Polo T-shirt
+               Trouser
               </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/kidsShorts"}
-              >
-                Shorts
-              </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/kidsTrouser"}
-              >
-                Trouser
-              </Link>
+              
             </div>
             <div className="px-2 flex flex-col  ">
-              <h1 className=" uppercase  text-black font-bold">FACE MASK</h1>
+              <h1 className=" uppercase  text-black font-bold">Bulk</h1>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/faceMaskProfessional7LayerMask"}
+                href={"/shop/"}
               >
-                Professional 7 Layer Mask
+                Order Bulk Now 
               </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/faceMaskSportsEdition"}
-              >
-                Sports Edition
-              </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/faceMaskWomensDesigner"}
-              >
-                Womens Designer Edition
-              </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/faceMaskWomensEmbroidery"}
-              >
-                Womens Embroidery Edition
-              </Link>
-              <Link
-                className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/faceMaskKidsMask"}
-              >
-                Kids Face Mask
-              </Link>
+        
+              
             </div>
+           
+          
           </div>
         </div>
       </div>
