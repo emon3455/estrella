@@ -6,6 +6,8 @@ import CSelect from "@/utils/CSelect/CSelect";
 import CButton from "@/utils/CButton/CButton";
 import CTextArea from "@/utils/CTextArea/CTextArea";
 import CFileInput from "@/utils/CFileinput/CFileinput";
+import { successAlert } from "@/utils/alert-function";
+import { useAddProductMutation } from "@/Redux/Features/admin/product/admin-product-slice";
 
 // Define types for the form data
 interface GeneralSize {
@@ -86,10 +88,8 @@ const AddProductForm: React.FC = () => {
     images: [],
     stock: 0,
   });
-
-  console.log(formData?.subCategory);
-
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [addProduct,{isLoading, data}] = useAddProductMutation();
 
   // Calculate stock based on generalSize
   useEffect(() => {
@@ -128,7 +128,6 @@ const AddProductForm: React.FC = () => {
     selectedOptions: { value: string; label: string }[]
   ) => {
     const selectedValues = selectedOptions.map((option) => option.value);
-
     setFormData({
       ...formData,
       subCategory: [...new Set([...formData.subCategory, ...selectedValues])],
@@ -166,8 +165,9 @@ const AddProductForm: React.FC = () => {
 
     // Send formData to the backend
     try {
-      const res = await axios.post("/api/products", finalData);
-      console.log("Product created:", res.data);
+      const resp = addProduct(finalData)?.unwrap()
+      console.log("Product created:", resp);
+      successAlert({title:"Product Added!", text:"Product added successfully."})
     } catch (error) {
       console.error("Error submitting product:", error);
     }
@@ -175,42 +175,65 @@ const AddProductForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="p-4 space-y-4">
-      <CInput
-        label="Title"
-        name="title"
-        value={formData.title}
-        onChange={handleInputChange}
-        required
-      />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="">
+          <CInput
+            label="Title"
+            name="title"
+            value={formData.title}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
 
-      <CInput
-        label="Fabrics"
-        name="fabrics"
-        value={formData.fabrics}
-        onChange={handleInputChange}
-      />
+        <div className="">
+          <CInput
+            label="Fabrics"
+            name="fabrics"
+            value={formData.fabrics}
+            onChange={handleInputChange}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="">
+          <CInput
+            label="Price"
+            name="price"
+            type="number"
+            value={formData.price}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+
+        <div className="">
+          <CInput
+            label="Previous Price"
+            name="previousPrice"
+            type="number"
+            value={formData.previousPrice}
+            onChange={handleInputChange}
+          />
+        </div>
+      </div>
+
+      <div>
+        <label>Images</label>
+        <CFileInput
+          type="file"
+          accept="image/*"
+          files={imageFiles}
+          multiple
+          onChange={(e) => setImageFiles(Array.from(e.target.files || []))}
+        />
+      </div>
 
       <CTextArea
         label="Description"
         name="description"
         value={formData.description}
-        onChange={handleInputChange}
-      />
-
-      <CInput
-        label="Price"
-        name="price"
-        type="number"
-        value={formData.price}
-        onChange={handleInputChange}
-        required
-      />
-
-      <CInput
-        label="Previous Price"
-        name="previousPrice"
-        type="number"
-        value={formData.previousPrice}
         onChange={handleInputChange}
       />
 
@@ -262,17 +285,6 @@ const AddProductForm: React.FC = () => {
         readOnly
       />
 
-      <div>
-        <label>Images</label>
-        <CFileInput
-          type="file"
-          accept="image/*"
-          files={imageFiles}
-          multiple
-          onChange={(e) => setImageFiles(Array.from(e.target.files || []))}
-        />
-      </div>
-
       <div className="flex gap-4">
         <label>
           <input
@@ -294,7 +306,7 @@ const AddProductForm: React.FC = () => {
         </label>
       </div>
 
-      <CButton variant="solid" type="submit">
+      <CButton variant="solid" type="submit" loading={isLoading}>
         Submit
       </CButton>
     </form>

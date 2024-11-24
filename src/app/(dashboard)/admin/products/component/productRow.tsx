@@ -1,38 +1,12 @@
 "use client";
-import { useFilterProductMutation } from "@/Redux/Features/admin/product/admin-product-slice";
 import CCard from "@/utils/CCard/CCard";
 import CSkeleton from "@/utils/CSkelleton/CSkelleton";
-import { useEffect, useState } from "react";
 import ProductRowData from "./ProductRowData";
+import { useGetProductQuery } from "@/Redux/Features/admin/product/admin-product-slice";
 
 const ProductRow = () => {
-  const [data, setData]: any = useState();
-  const [
-    filterProduct,
-    { isLoading, isSuccess, data: ProductData, isError, error: productError },
-  ] = useFilterProductMutation();
 
-  const refetch = async () => {
-    try {
-      const filterData = await filterProduct({}).unwrap();
-      setData(filterData.products);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  useEffect(() => {
-    const fetchFilteredProducts = async () => {
-      try {
-        const filterData = await filterProduct({}).unwrap();
-        // console.log(filterData.products);
-        setData(filterData.products);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchFilteredProducts();
-  }, [filterProduct]);
+  const { isLoading, isSuccess, data, isError, error: productError, refetch } = useGetProductQuery({} as any);
 
   return (
     // <div>This is product page</div>
