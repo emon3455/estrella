@@ -2,14 +2,6 @@ import { apiSlice } from "../../api/apiSlice";
 
 export const adminProductSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    
-    addProduct: builder.mutation({
-      query: (data) => ({
-        url: "/product",
-        method: "POST",
-        body: data,
-      }),
-    }),
 
     getProduct: builder.query({
       query: () => ({
@@ -18,6 +10,21 @@ export const adminProductSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    addProduct: builder.mutation({
+      query: (data) => ({
+        url: "/product/add",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    updateProduct: builder.mutation({
+      query: (id:any, productData:any) => ({
+        url: `/product/update/${id}`,
+        method: "PUT",
+        body: productData,
+      }),
+    }),
 
     deleteProduct: builder.mutation({
       query: (id: any) => {
@@ -27,11 +34,22 @@ export const adminProductSlice = apiSlice.injectEndpoints({
         };
       },
     }),
+
+    filterProduct: builder.mutation({
+      query: (data) => ({
+        url: "product/filter?searchText=",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    getSingleProduct: builder.query({
+      query: (id:any) => ({
+        url: `/product/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const {
-  useAddProductMutation,
-  useGetProductQuery,
-  useDeleteProductMutation
-} = adminProductSlice;
+export const { useGetSingleProductQuery, useFilterProductMutation, useAddProductMutation, useGetProductQuery, useDeleteProductMutation, useUpdateProductMutation } = adminProductSlice;

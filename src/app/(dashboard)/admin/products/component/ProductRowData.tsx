@@ -3,9 +3,13 @@ import cToastify from "@/shared/Toastify/Toadtify";
 import { warningAlert } from "@/utils/alert-function";
 import CButton from "@/utils/CButton/CButton";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 const ProductRowData = ({ product, index, refetch }: any) => {
+
+  const router = useRouter();
+
   const [
     deleteProduct,
     { isLoading, isError, isSuccess: isPrductDeleteSuccess, error },
@@ -41,6 +45,10 @@ const ProductRowData = ({ product, index, refetch }: any) => {
         }
       }
     });
+  };
+
+  const handleUpdate = (id: string) => {
+    router.push(`/admin/products/${id}`);
   };
 
   return (
@@ -80,6 +88,7 @@ const ProductRowData = ({ product, index, refetch }: any) => {
           <CButton
             variant="solid"
             customClass="bg-green-800 px-4 py-2 rounded text-white"
+            onClick={() => handleUpdate(id)}
           >
             {" "}
             Update{" "}
