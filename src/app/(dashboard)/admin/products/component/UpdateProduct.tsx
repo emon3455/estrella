@@ -107,7 +107,7 @@ const UpdateProductForm: React.FC<{ id: string }> = ({ id }) => {
         generalSize: product.generalSize,
         fabrics: product.fabrics,
         images: product.images,
-        stock: Object.values(product.generalSize).reduce((acc, size) => acc + size, 0),
+        stock: Object.values(product.generalSize).reduce((acc, size) => acc as any + size, 0) as any,
       });
     }
   }, [product]);
@@ -248,7 +248,7 @@ const UpdateProductForm: React.FC<{ id: string }> = ({ id }) => {
       <CTextArea
         label="Description"
         name="description"
-        value={formData.description}
+        defaultValue={formData.description}
         onChange={handleInputChange}
       />
 
@@ -292,14 +292,6 @@ const UpdateProductForm: React.FC<{ id: string }> = ({ id }) => {
         </div>
       </div>
 
-      <CInput
-        label="Total In Stock"
-        name="stock"
-        type="number"
-        value={formData.stock}
-        readOnly
-      />
-
       <div className="flex items-center gap-5">
         <div>
           <label>
@@ -309,9 +301,10 @@ const UpdateProductForm: React.FC<{ id: string }> = ({ id }) => {
               checked={formData.isTopSelling}
               onChange={handleInputChange}
             />
-            Is Top Selling
+            Top Selling
           </label>
         </div>
+
         <div>
           <label>
             <input
@@ -325,11 +318,13 @@ const UpdateProductForm: React.FC<{ id: string }> = ({ id }) => {
         </div>
       </div>
 
-      <div className="text-right">
-        <CButton variant="solid" type="submit" disabled={isLoading}>
-          {isLoading ? "Updating..." : "Update Product"}
-        </CButton>
-      </div>
+      <CButton
+        variant="solid"
+        type="submit"
+        disabled={isLoading}
+      >
+        {isLoading ? "Updating..." : "Update Product"}
+      </CButton>
     </form>
   );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import UpdateProduct from '../component/UpdateProduct';
 
-const UpdateProductPage = ({params}) => {
+const UpdateProductPage = ({params}:any) => {
     return (
         <div>
             <UpdateProduct id={params.id}/>

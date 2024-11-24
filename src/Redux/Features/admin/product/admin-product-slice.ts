@@ -19,8 +19,8 @@ export const adminProductSlice = apiSlice.injectEndpoints({
     }),
 
     updateProduct: builder.mutation({
-      query: (id:any, productData:any) => ({
-        url: `/product/update/${id}`,
+      query: (productData :any) => ({
+        url: `/product/update/${productData?.id}`,
         method: "PUT",
         body: productData,
       }),
