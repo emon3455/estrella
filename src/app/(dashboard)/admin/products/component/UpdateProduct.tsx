@@ -7,7 +7,11 @@ import CButton from "@/utils/CButton/CButton";
 import CTextArea from "@/utils/CTextArea/CTextArea";
 import CFileInput from "@/utils/CFileinput/CFileinput";
 import { successAlert } from "@/utils/alert-function";
-import { useGetSingleProductQuery, useUpdateProductMutation } from "@/Redux/Features/admin/product/admin-product-slice";
+import {
+  useGetSingleProductQuery,
+  useUpdateProductMutation,
+} from "@/Redux/Features/admin/product/admin-product-slice";
+import Image from "next/image";
 
 // Define types for the form data
 interface GeneralSize {
@@ -74,7 +78,8 @@ const subcategories = {
 const initialSize: GeneralSize = { s: 0, m: 0, l: 0, xl: 0, xxl: 0, xxxl: 0 };
 
 const UpdateProductForm: React.FC<{ id: string }> = ({ id }) => {
-  const { data: product, isLoading: isFetchingProduct } = useGetSingleProductQuery(id);
+  const { data: product, isLoading: isFetchingProduct } =
+    useGetSingleProductQuery(id);
   const [updateProduct, { isLoading, data }] = useUpdateProductMutation();
 
   const [formData, setFormData] = useState<FormData>({
@@ -107,7 +112,10 @@ const UpdateProductForm: React.FC<{ id: string }> = ({ id }) => {
         generalSize: product.generalSize,
         fabrics: product.fabrics,
         images: product.images,
-        stock: Object.values(product.generalSize).reduce((acc, size) => acc as any + size, 0) as any,
+        stock: Object.values(product.generalSize).reduce(
+          (acc, size) => (acc as any) + size,
+          0
+        ) as any,
       });
     }
   }, [product]);
@@ -173,11 +181,14 @@ const UpdateProductForm: React.FC<{ id: string }> = ({ id }) => {
 
     // Upload images to ImgBB
     const imageUrls = await handleImageUpload();
-    const finalData = { ...formData, images: imageUrls };
+    const finalData = { ...formData, images: imageUrls ? imageUrls : formData?.images };
 
     // Send formData to the backend
     try {
-      const resp = await updateProduct({ id, productData: finalData })?.unwrap();
+      const resp = await updateProduct({
+        id,
+        productData: finalData,
+      })?.unwrap();
       console.log("Product updated:", resp);
       successAlert({
         title: "Product Updated!",
@@ -189,143 +200,144 @@ const UpdateProductForm: React.FC<{ id: string }> = ({ id }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 space-y-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div>
-          <CInput
-            label="Title"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-
-        <div>
-          <CInput
-            label="Fabrics"
-            name="fabrics"
-            value={formData.fabrics}
-            onChange={handleInputChange}
-          />
-        </div>
+    <div className="">
+      <div className="my-5">
+        <Image src={formData?.images[0] as any} height={100} width={100} alt="product image" className="mx-auto rounded-md" />
       </div>
+      <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div>
+            <CInput
+              label="Title"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div>
-          <CInput
-            label="Price"
-            name="price"
-            type="number"
-            value={formData.price}
-            onChange={handleInputChange}
-            required
-          />
+          <div>
+            <CInput
+              label="Fabrics"
+              name="fabrics"
+              value={formData.fabrics}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div>
+            <CInput
+              label="Price"
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div>
+            <CInput
+              label="Previous Price"
+              name="previousPrice"
+              type="number"
+              value={formData.previousPrice}
+              onChange={handleInputChange}
+            />
+          </div>
         </div>
 
         <div>
-          <CInput
-            label="Previous Price"
-            name="previousPrice"
-            type="number"
-            value={formData.previousPrice}
-            onChange={handleInputChange}
+          <label>Images</label>
+          <CFileInput
+            type="file"
+            accept="image/*"
+            files={imageFiles}
+            multiple
+            onChange={(e) => setImageFiles(Array.from(e.target.files || []))}
           />
         </div>
-      </div>
 
-      <div>
-        <label>Images</label>
-        <CFileInput
-          type="file"
-          accept="image/*"
-          files={imageFiles}
-          multiple
-          onChange={(e) => setImageFiles(Array.from(e.target.files || []))}
+        <CTextArea
+          label="Description"
+          name="description"
+          defaultValue={formData.description}
+          onChange={handleInputChange}
         />
-      </div>
 
-      <CTextArea
-        label="Description"
-        name="description"
-        defaultValue={formData.description}
-        onChange={handleInputChange}
-      />
-
-      <CSelect
-        label="Category"
-        options={categories}
-        value={formData.category}
-        onChange={handleCategoryChange}
-      />
-
-      {formData.category && (
         <CSelect
-          label="Sub Category"
-          options={subcategories[formData.category]?.map((sub: string) => ({
-            value: sub,
-            label: sub,
-          }))}
-          isMulti={true} // Ensure multiple selections are allowed
-          defaultValue={formData.subCategory.map((value) => ({
-            value: value,
-            label: value,
-          }))}
-          onChange={handleSubCategoryChange}
+          label="Category"
+          options={categories}
+          value={formData.category}
+          onChange={handleCategoryChange}
         />
-      )}
 
-      <div>
-        <label>General Size Available Product</label>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-          {Object.keys(initialSize).map((size) => (
-            <div key={size}>
-              <CInput
-                label={size.toUpperCase()}
-                name={size}
-                type="number"
-                value={formData.generalSize[size as keyof GeneralSize]}
-                onChange={handleSizeChange}
+        {formData.category && (
+          <CSelect
+            label="Sub Category"
+            options={subcategories[formData.category]?.map((sub: string) => ({
+              value: sub,
+              label: sub,
+            }))}
+            isMulti={true} // Ensure multiple selections are allowed
+            defaultValue={formData.subCategory.map((value) => ({
+              value: value,
+              label: value,
+            }))}
+            onChange={handleSubCategoryChange}
+          />
+        )}
+
+        <div>
+          <label>General Size Available Product</label>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+            {Object.keys(initialSize).map((size) => (
+              <div key={size}>
+                <CInput
+                  label={size.toUpperCase()}
+                  name={size}
+                  type="number"
+                  value={formData.generalSize[size as keyof GeneralSize]}
+                  onChange={handleSizeChange}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-5">
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                name="isTopSelling"
+                checked={formData.isTopSelling}
+                onChange={handleInputChange}
               />
-            </div>
-          ))}
-        </div>
-      </div>
+              Top Selling
+            </label>
+          </div>
 
-      <div className="flex items-center gap-5">
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              name="isTopSelling"
-              checked={formData.isTopSelling}
-              onChange={handleInputChange}
-            />
-            Top Selling
-          </label>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                name="isFreeDelivery"
+                checked={formData.isFreeDelivery}
+                onChange={handleInputChange}
+              />
+              Free Delivery
+            </label>
+          </div>
         </div>
 
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              name="isFreeDelivery"
-              checked={formData.isFreeDelivery}
-              onChange={handleInputChange}
-            />
-            Free Delivery
-          </label>
-        </div>
-      </div>
-
-      <CButton
-        variant="solid"
-        type="submit"
-        disabled={isLoading}
-      >
-        {isLoading ? "Updating..." : "Update Product"}
-      </CButton>
-    </form>
+        <CButton variant="solid" type="submit" disabled={isLoading}>
+          {isLoading ? "Updating..." : "Update Product"}
+        </CButton>
+      </form>
+    </div>
   );
 };
 
