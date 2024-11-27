@@ -11,6 +11,8 @@ const ProductDetailsCard = ({ product }: any) => {
   const [tabs, setTab] = useState("");
   const [counter, setCounter] = useState(1);
 
+  console.log(product)
+
   const handleCounter = () => {
     if (product?.generalsize?.[tabs] > counter) {
       setCounter(counter + 1);

@@ -11,77 +11,91 @@ import { DemoProduct } from "@/content/DemoProduct";
 import ShopProductCart from "./ShopProductCart";
 import { initData } from "@/content/initData";
 import CCheckRadio from "@/utils/CCheckRadio/CCheckRadio";
-import { useFilterProductMutation } from "@/Redux/Features/admin/product/admin-product-slice";
 import CSkeleton from "@/utils/CSkelleton/CSkelleton";
 import UpperNav from "@/components/UpperNav";
 import COverlayLoader from "@/utils/COverlayLoader/COverlayLoader";
 import Loading from "@/app/loading";
 import NoProduct from "@/shared/NoProduct";
+import { useFilterProductQuery } from "@/Redux/Features/admin/product/admin-product-slice";
 
+interface FilterCriteria {
+  category?: string;
+  subCategory?: string[];
+}
 const ShopPageCompoment = () => {
-  const initialData = initData;
+  const categories = [
+    { value: "Men", label: "Men" },
+    { value: "Women", label: "Women" },
+    { value: "Kids", label: "Kids" },
+    { value: "Bulk Order", label: "Bulk Order" },
+  ];
 
-  const [info, setInfo] = useState(initialData);
+  const subcategories = {
+    Men: [
+      "Short sleeve t-shirt",
+      "Long sleeve t-shirt",
+      "Polo shirt",
+      "Sports jersey",
+      "Dress shirt",
+      "Casual shirt",
+      "Katua",
+      "Panjabi",
+      "Pajama",
+      "Trouser",
+      "Cargo pant",
+      "Under wear",
+      "Tank top",
+      "Sweat shirt",
+      "Hoodie",
+    ],
+    Women: ["Comfy top bottom set", "Kurti, Tunic, & Tops"],
+    Kids: [
+      "Top bottom set",
+      "T-shirt",
+      "Polo shirt",
+      "Sleeve less t-shirt",
+      "3quarter shorts",
+      "Trouser",
+    ],
+    "Bulk Order": ["Bulk Order"],
+  } as any;
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
+    []
+  );
 
-  const [filteredData, setFilteredData] = useState<any>({});
-
-  const getFilteredData = useCallback((data: any): any => {
-    const result: any = {};
-
-    for (const key in data) {
-      if (typeof data[key] === "object" && !Array.isArray(data[key])) {
-        const nestedResult = getFilteredData(data[key]);
-        if (Object.keys(nestedResult).length > 0) {
-          result[key] = nestedResult;
-        }
-      } else if (data[key] === true) {
-        result[key] = data[key];
-      }
+  const handleCategoryClick = (category: string) => {
+    if (selectedCategory !== category) {
+      setSelectedCategory(category); // Set the new category
+      setSelectedSubcategories([]); // Reset subcategories when category changes
+    } else {
+      setSelectedCategory(""); // Deselect category if clicked again
     }
+  };
 
-    return result;
-  }, []);
+  const handleSubcategoryClick = (subcategory: string) => {
+    setSelectedSubcategories(
+      (prev) =>
+        prev.includes(subcategory)
+          ? prev.filter((item) => item !== subcategory) // Remove if already selected
+          : [...prev, subcategory] // Add if not selected
+    );
+  };
 
-  useEffect(() => {
-    const filtered = getFilteredData(info);
-    setFilteredData(filtered);
-  }, [info, getFilteredData]);
-
-  const [data, setData]: any = useState([]);
-  // console.log(data);
-  const [
-    filterProduct,
-    { isLoading, isSuccess, data: ProductData, isError, error: productError },
-  ] = useFilterProductMutation();
-
-  // const refetch = async () => {
-  //     try {
-  //         const filterData = await filterProduct(filteredData).unwrap();
-  //         // console.log(filterData.products);
-  //         setData(filterData.products)
-  //     } catch (error) {
-  //         console.error(error);
-  //     }
-
-  // }
-
-  console.log({ filter: filteredData });
+  const { data, isLoading, error, refetch } = useFilterProductQuery(
+    {
+      category: selectedCategory ?? "",
+      subCategory: selectedSubcategories,
+    }
+    // { skip: !selectedCategory } // Skip query if no category is selected
+  );
+  console.log(data);
 
   useEffect(() => {
-    const fetchFilteredProducts = async () => {
-      try {
-        const filterData = await filterProduct({
-          filter: filteredData,
-        }).unwrap();
-        // console.log(filterData.products);
-        setData(filterData.products);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchFilteredProducts();
-  }, [filterProduct, filteredData]);
+    if (selectedCategory) {
+      refetch(); // Fetch data whenever category or subcategory changes
+    }
+  }, [selectedCategory, selectedSubcategories, refetch]);
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -94,6 +108,7 @@ const ShopPageCompoment = () => {
   const handleClick = () => {
     setClick(!click);
   };
+
   return (
     <div>
       <section>
@@ -166,1081 +181,115 @@ const ShopPageCompoment = () => {
       <div className="flex ">
         <div className="  hidden w-[350px] lg:block text-[12px] py-4">
           <div className="  mx-4 h-screen overflow-scroll">
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, newArrival: !info.newArrival });
-                }}
-                type="checkbox"
-                id="New Arrival"
-                label="New Arrival"
-              />
-            </ul>
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, topSelling: !info.topSelling });
-                }}
-                type="checkbox"
-                id="Top selling"
-                label="Top selling"
-              />
-            </ul>
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, freeDelivary: !info.freeDelivary });
-                }}
-                type="checkbox"
-                id="Free Delivary"
-                label="Free Delivary"
-              />
-            </ul>
+            <div className="p-6 w-[300px] mx-auto">
+              <h1 className="text-2xl font-bold mb-4">Select Categories</h1>
 
-            {/* mens  */}
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isMen: !info.isMen });
-                }}
-                type="checkbox"
-                id="Men"
-                label="Men"
-              />
+              {/* Category and Subcategories */}
+              <div className="space-y-4">
+                {categories.map((category) => (
+                  <div key={category.value} className="border-b pb-2">
+                    {/* Category Button */}
+                    <button
+                      onClick={() => handleCategoryClick(category.value)}
+                      className={`flex items-center justify-between w-full text-left px-3 py-2 rounded-lg border transition-all duration-300 ease-in-out ${
+                        selectedCategory === category.value
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 hover:bg-gray-300"
+                      }`}
+                    >
+                      {category.label}
+                      {selectedCategory === category.value ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                          className="w-4 h-4 transition-transform duration-300 ease-in-out rotate-180"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M5 15l7-7 7 7"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                          className="w-4 h-4 transition-transform duration-300 ease-in-out rotate-0"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      )}
+                    </button>
 
-              {/* mens second level half shirt  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        menHalfSleeveTShirt: !info.menHalfSleeveTShirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="Half-Sleeve T-Shirt"
-                    label="Half-Sleeve T-Shirt"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menHalfSleeveTShirtBlank:
-                              !info.menHalfSleeveTShirtBlank,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_blank"
-                        label="blank"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menHalfSleeveTShirtPrinted:
-                              !info.menHalfSleeveTShirtPrinted,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_printed"
-                        label="printed"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menHalfSleeveTShirtCutAndStitch:
-                              !info.menHalfSleeveTShirtCutAndStitch,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_cutAndStitch"
-                        label="Cut and Stitch"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menHalfSleeveTShirtRaglan:
-                              !info.menHalfSleeveTShirtRaglan,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_raglan"
-                        label="Raglan"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtRaglanDesigner:
-                              !info.menFullSleeveTShirtRaglanDesigner,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_raglanDesigner"
-                        label="Raglan (Designer)"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menHalfSleeveTShirtSports:
-                              !info.menHalfSleeveTShirtSports,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_sports"
-                        label="Sports"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* full tshirt  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        menFullSleeveTShirt: !info.menFullSleeveTShirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="Full-Sleeve T-Shirt"
-                    label="Full-Sleeve T-Shirt"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtBlank:
-                              !info.menFullSleeveTShirtBlank,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_blank"
-                        label="blank"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtPrinted:
-                              !info.menFullSleeveTShirtPrinted,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_blackprinted"
-                        label="printed"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtRaglan:
-                              !info.menFullSleeveTShirtRaglan,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_blackraglan"
-                        label="raglan"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtCutAndStitch:
-                              !info.menFullSleeveTShirtCutAndStitch,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_cutandStitch"
-                        label="Cut and Stitch"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtCutAndStitchDesigner:
-                              !info.menFullSleeveTShirtCutAndStitchDesigner,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_cutandStitchDesigner"
-                        label="Cut and Stitch (Design)"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtRaglanDesigner:
-                              !info.menFullSleeveTShirtRaglanDesigner,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_raglanDesigner"
-                        label="Raglan (Designer)"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtSports:
-                              !info.menFullSleeveTShirtSports,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_Sports"
-                        label="Sports"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men shirt  */}
-
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menShirt: !info.menShirt });
-                    }}
-                    type="checkbox"
-                    id="menShirt"
-                    label="Shirt"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menCasualShirt: !info.menCasualShirt,
-                          });
-                        }}
-                        type="checkbox"
-                        id="CasualShirt"
-                        label="Casual Shirt"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFormalShirt: !info.menFormalShirt,
-                          });
-                        }}
-                        type="checkbox"
-                        id="FormalShirt"
-                        label="Formal Shirt"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men polo tshirt  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menPoloTShirt: !info.menPoloTShirt });
-                    }}
-                    type="checkbox"
-                    id="menPolo"
-                    label="Polo"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menPoloTShirtClassic: !info.menPoloTShirtClassic,
-                          });
-                        }}
-                        type="checkbox"
-                        id="classicPolo"
-                        label="Classic"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menPoloTShirtCutAndStitch:
-                              !info.menPoloTShirtCutAndStitch,
-                          });
-                        }}
-                        type="checkbox"
-                        id="cuntandstichPolo"
-                        label="Cut and Stitch"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menPoloTShirtPrinted: !info.menPoloTShirtPrinted,
-                          });
-                        }}
-                        type="checkbox"
-                        id="printedPolo"
-                        label="Printed"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men shorts  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menShorts: !info.menShorts });
-                    }}
-                    type="checkbox"
-                    id="menShort"
-                    label="Shorts"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menChinoShorts: !info.menChinoShorts,
-                          });
-                        }}
-                        type="checkbox"
-                        id="chinoShorts"
-                        label="Chino Shorts"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menSportsShorts: !info.menSportsShorts,
-                          });
-                        }}
-                        type="checkbox"
-                        id="sportShorts"
-                        label="Sports Shorts"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men underweare  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menUnderwear: !info.menUnderwear });
-                    }}
-                    type="checkbox"
-                    id="menUnderwear"
-                    label="Underwear"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menBoxerBrief: !info.menBoxerBrief,
-                          });
-                        }}
-                        type="checkbox"
-                        id="boxerBrief"
-                        label="Boxer Brief"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menBoxerShorts: !info.menBoxerShorts,
-                          });
-                        }}
-                        type="checkbox"
-                        id="boxerShort"
-                        label="Boxer Short"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({ ...info, menTrunk: !info.menTrunk });
-                        }}
-                        type="checkbox"
-                        id="boxerTrunk"
-                        label="Trunk"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menWovenShorts: !info.menWovenShorts,
-                          });
-                        }}
-                        type="checkbox"
-                        id="wovenshorts"
-                        label="Woven Shorts"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men shocks  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menSocks: !info.menSocks });
-                    }}
-                    type="checkbox"
-                    id="menSocks"
-                    label="Socks"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menSocksClassic: !info.menSocksClassic,
-                          });
-                        }}
-                        type="checkbox"
-                        id="classicSocks"
-                        label="Classic"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menSocksSports: !info.menSocksSports,
-                          });
-                        }}
-                        type="checkbox"
-                        id="SportsSocks"
-                        label="Sports"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menSocksUrban: !info.menSocksUrban,
-                          });
-                        }}
-                        type="checkbox"
-                        id="UrbanSocks"
-                        label="Urban"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men accesories  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        menAccesorries: !info.menAccesorries,
-                      });
-                    }}
-                    type="checkbox"
-                    id="menAccesories"
-                    label="Accessories"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({ ...info, menBelt: !info.menBelt });
-                        }}
-                        type="checkbox"
-                        id="menBelt"
-                        label="Belt"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({ ...info, menWallet: !info.menWallet });
-                        }}
-                        type="checkbox"
-                        id="menWallet"
-                        label="Wallet"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-              {/* others mens  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menHoodie: !info.menHoodie });
-                    }}
-                    type="checkbox"
-                    id="Hoodie"
-                    label="Hoodie"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menJacket: !info.menJacket });
-                    }}
-                    type="checkbox"
-                    id="Jacket"
-                    label="Jacket"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menJoggers: !info.menJoggers });
-                    }}
-                    type="checkbox"
-                    id="Jogger"
-                    label="Jogger"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menJeans: !info.menJeans });
-                    }}
-                    type="checkbox"
-                    id="jeans"
-                    label="jeans"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menMaggie: !info.menMaggie });
-                    }}
-                    type="checkbox"
-                    id="Maggie"
-                    label="Maggie"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menPanjabi: !info.menPanjabi });
-                    }}
-                    type="checkbox"
-                    id="Panjabi"
-                    label="Panjabi"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menTupi: !info.menTupi });
-                    }}
-                    type="checkbox"
-                    id="Tupi"
-                    label="Tupi"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menSweatshirt: !info.menSweatshirt });
-                    }}
-                    type="checkbox"
-                    id="SweatShirts"
-                    label="Sweat Shirts"
-                  />
-                </ul>
-              </section>
-            </ul>
-
-            {/* women  */}
-
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isWomen: !info.isWomen });
-                }}
-                type="checkbox"
-                id="Women"
-                label="Women"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, womenTShirt: !info.womenTShirt });
-                    }}
-                    type="checkbox"
-                    id="T-Shirt"
-                    label="T-Shirt"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        womenComfyTrouser: !info.womenComfyTrouser,
-                      });
-                    }}
-                    type="checkbox"
-                    id="Comfy trouser"
-                    label="Comfy trouser"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        womenKurtiTunicAndTops: !info.womenKurtiTunicAndTops,
-                      });
-                    }}
-                    type="checkbox"
-                    id="Kurti Tunic And Tops"
-                    label="Kurti Tunic And Tops"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, womenPajamas: !info.womenPajamas });
-                    }}
-                    type="checkbox"
-                    id="Pajamas"
-                    label="Pajamas"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, womenPants: !info.womenPants });
-                    }}
-                    type="checkbox"
-                    id="Pant"
-                    label="Pant"
-                  />
-                </ul>
-              </section>
-            </ul>
-
-            {/* kids  */}
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isKids: !info.isKids });
-                }}
-                type="checkbox"
-                id="Kids"
-                label="Kids"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        isKindsHalfSleeveTshirt: !info.isKindsHalfSleeveTshirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="kidsHalfSleeve"
-                    label="Half Sleeve T-Shirt"
-                  />
-                </ul>
-
-                {/* third level  */}
-                <section className="ml-6">
-                  <ul>
-                    <CCheckRadio
-                      onChange={() => {
-                        setInfo({
-                          ...info,
-                          kidsHalfSleeveTShirtBlank:
-                            !info.kidsHalfSleeveTShirtBlank,
-                        });
-                      }}
-                      type="checkbox"
-                      id="Kids_Half-Sleeve_T-Shirt_blank"
-                      label="blank"
-                    />
-                  </ul>
-                  <ul>
-                    <CCheckRadio
-                      onChange={() => {
-                        setInfo({
-                          ...info,
-                          kidsHalfSleeveTShirtPrinted:
-                            !info.kidsHalfSleeveTShirtPrinted,
-                        });
-                      }}
-                      type="checkbox"
-                      id="Kids_Half-Sleeve_T-Shirt_Printed"
-                      label="Printed"
-                    />
-                  </ul>
-                </section>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        isKindsHalfSleeveTshirt: !info.isKindsHalfSleeveTshirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="kidsFullSleeveTshirt"
-                    label="Full Sleeve T-Shirt"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, kidsMaggie: !info.kidsMaggie });
-                    }}
-                    type="checkbox"
-                    id="kidsMaggie"
-                    label="Maggie"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        kidsPoloTShirt: !info.kidsPoloTShirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="kidsPolo"
-                    label="Polo T-Shirt"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, kidsShorts: !info.kidsShorts });
-                    }}
-                    type="checkbox"
-                    id="kidsShorts"
-                    label="Shorts"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, kidsTrouser: !info.kidsTrouser });
-                    }}
-                    type="checkbox"
-                    id="kidsTrousers"
-                    label="Trouser"
-                  />
-                </ul>
-              </section>
-            </ul>
-            {/* face mask  */}
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isFaceMask: !info.isFaceMask });
-                }}
-                type="checkbox"
-                id="FaceMask"
-                label="Face Mask"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        faceMaskKidsMask: !info.faceMaskKidsMask,
-                      });
-                    }}
-                    type="checkbox"
-                    id="kidsMask"
-                    label="Kids Maks"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        faceMaskProfessional7LayerMask:
-                          !info.faceMaskProfessional7LayerMask,
-                      });
-                    }}
-                    type="checkbox"
-                    id="professionalMask"
-                    label="Professional 7 Layer Mask"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        faceMaskSportsEdition: !info.faceMaskSportsEdition,
-                      });
-                    }}
-                    type="checkbox"
-                    id="sportsEditionMask"
-                    label="Sports Edition"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        faceMaskWomensDesigner: !info.faceMaskWomensDesigner,
-                      });
-                    }}
-                    type="checkbox"
-                    id="womensDesigner"
-                    label="Womens Designer"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        faceMaskWomensEmbroidery:
-                          !info.faceMaskWomensEmbroidery,
-                      });
-                    }}
-                    type="checkbox"
-                    id="womensEmbroidery"
-                    label="Womens Embroidery"
-                  />
-                </ul>
-              </section>
-            </ul>
-            {/* sports  */}
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isSports: !info.isSports });
-                }}
-                type="checkbox"
-                id="Sports"
-                label="Sports"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        sportsFootballJersey: !info.sportsFootballJersey,
-                      });
-                    }}
-                    type="checkbox"
-                    id="footballJersey"
-                    label="Football Jersey"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, sportsTShirts: !info.sportsTShirts });
-                    }}
-                    type="checkbox"
-                    id="sportsTShirts"
-                    label="Sports TShirts"
-                  />
-                </ul>
-              </section>
-            </ul>
-
-            {/* merchandise  */}
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isMerchandise: !info.isSports });
-                }}
-                type="checkbox"
-                id="Merchandise"
-                label="Merchandise"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        merchandiseAurthohin: !info.merchandiseAurthohin,
-                      });
-                    }}
-                    type="checkbox"
-                    id="aurthohin"
-                    label="Aurthohin"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        merchandiseGrameenphone: !info.merchandiseGrameenphone,
-                      });
-                    }}
-                    type="checkbox"
-                    id="grameenphone"
-                    label="Grameenphone"
-                  />
-                </ul>
-              </section>
-            </ul>
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({
-                    ...info,
-                    isWinterExclusive: !info.isWinterExclusive,
-                  });
-                }}
-                type="checkbox"
-                id="WinterExclisive"
-                label="Winter Exclisive"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        winterExclusiveFullSleeveTShirt:
-                          !info.winterExclusiveFullSleeveTShirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="winterfullSleeveTShirt"
-                    label="Full Sleeve T-Shirt"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        winterExclusiveHoodie: !info.winterExclusiveHoodie,
-                      });
-                    }}
-                    type="checkbox"
-                    id="winterhoodie"
-                    label="Hoodie"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        winterExclusiveJacket: !info.winterExclusiveJacket,
-                      });
-                    }}
-                    type="checkbox"
-                    id="winterjacket"
-                    label="Jacket"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        winterExclusiveJoggers: !info.winterExclusiveJoggers,
-                      });
-                    }}
-                    type="checkbox"
-                    id="winterJoggers"
-                    label="Joggers"
-                  />
-                </ul>
-              </section>
-            </ul>
+                    {/* Subcategories */}
+                    <div
+                      className={`mt-2 pl-6 space-y-2 overflow-hidden transition-all duration-500 ease-in-out ${
+                        selectedCategory === category.value
+                          ? "max-h-[1400px] opacity-100 translate-y-0"
+                          : "max-h-0 opacity-0 -translate-y-2"
+                      }`}
+                    >
+                      {subcategories[category.value]?.map(
+                        (sub: any, idx: number) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleSubcategoryClick(sub)}
+                            className={`flex items-center justify-between w-full text-left px-3 py-2 rounded-lg border transition-all duration-300 ease-in-out ${
+                              selectedSubcategories.includes(sub)
+                                ? "bg-green-500 text-white border-green-600"
+                                : "bg-gray-100 text-gray-800 border-gray-300"
+                            } hover:shadow-md`}
+                          >
+                            <span>{sub}</span>
+                            {selectedSubcategories.includes(sub) ? (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2}
+                                stroke="currentColor"
+                                className="w-4 h-4 transition-transform duration-300 ease-in-out transform rotate-45"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M12 4.5v15m7.5-7.5h-15"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2}
+                                stroke="currentColor"
+                                className="w-4 h-4 transition-transform duration-300 ease-in-out transform rotate-0"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M12 4.5v15m7.5-7.5h-15"
+                                />
+                              </svg>
+                            )}
+                          </button>
+                        )
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1258,8 +307,12 @@ const ShopPageCompoment = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 my-8 mx-8">
-                {data.map((data: any, idx: number) => (
-                  <ShopProductCart key={idx} data={data} Loading={isLoading} />
+                {data?.products?.map((data: any) => (
+                  <ShopProductCart
+                    key={data._id}
+                    data={data}
+                    Loading={isLoading}
+                  />
                 ))}
               </div>
             )}
@@ -1278,1081 +331,115 @@ const ShopPageCompoment = () => {
           } `}
         >
           <div className="  mx-4 h-screen overflow-scroll text-[10px]">
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, newArrival: !info.newArrival });
-                }}
-                type="checkbox"
-                id="New Arrival"
-                label="New Arrival"
-              />
-            </ul>
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, topSelling: !info.topSelling });
-                }}
-                type="checkbox"
-                id="Top selling"
-                label="Top selling"
-              />
-            </ul>
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, freeDelivary: !info.freeDelivary });
-                }}
-                type="checkbox"
-                id="Free Delivary"
-                label="Free Delivary"
-              />
-            </ul>
+            <div className="p-6 max-w-lg mx-auto">
+              <h1 className="text-2xl font-bold mb-4">Select Categories</h1>
 
-            {/* mens  */}
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isMen: !info.isMen });
-                }}
-                type="checkbox"
-                id="Men"
-                label="Men"
-              />
+              {/* Category and Subcategories */}
+              <div className="space-y-4">
+                {categories.map((category) => (
+                  <div key={category.value} className="border-b pb-2">
+                    {/* Category Button */}
+                    <button
+                      onClick={() => handleCategoryClick(category.value)}
+                      className={`flex items-center justify-between w-full text-left px-3 py-2 rounded-lg border transition-all duration-300 ease-in-out ${
+                        selectedCategory === category.value
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 hover:bg-gray-300"
+                      }`}
+                    >
+                      {category.label}
+                      {selectedCategory === category.value ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                          className="w-4 h-4 transition-transform duration-300 ease-in-out rotate-180"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M5 15l7-7 7 7"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                          className="w-4 h-4 transition-transform duration-300 ease-in-out rotate-0"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      )}
+                    </button>
 
-              {/* mens second level half shirt  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        menHalfSleeveTShirt: !info.menHalfSleeveTShirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="Half-Sleeve T-Shirt"
-                    label="Half-Sleeve T-Shirt"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menHalfSleeveTShirtBlank:
-                              !info.menHalfSleeveTShirtBlank,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_blank"
-                        label="blank"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menHalfSleeveTShirtPrinted:
-                              !info.menHalfSleeveTShirtPrinted,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_printed"
-                        label="printed"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menHalfSleeveTShirtCutAndStitch:
-                              !info.menHalfSleeveTShirtCutAndStitch,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_cutAndStitch"
-                        label="Cut and Stitch"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menHalfSleeveTShirtRaglan:
-                              !info.menHalfSleeveTShirtRaglan,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_raglan"
-                        label="Raglan"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtRaglanDesigner:
-                              !info.menFullSleeveTShirtRaglanDesigner,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_raglanDesigner"
-                        label="Raglan (Designer)"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menHalfSleeveTShirtSports:
-                              !info.menHalfSleeveTShirtSports,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Half-Sleeve_T-Shirt_sports"
-                        label="Sports"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* full tshirt  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        menFullSleeveTShirt: !info.menFullSleeveTShirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="Full-Sleeve T-Shirt"
-                    label="Full-Sleeve T-Shirt"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtBlank:
-                              !info.menFullSleeveTShirtBlank,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_blank"
-                        label="blank"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtPrinted:
-                              !info.menFullSleeveTShirtPrinted,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_blackprinted"
-                        label="printed"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtRaglan:
-                              !info.menFullSleeveTShirtRaglan,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_blackraglan"
-                        label="raglan"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtCutAndStitch:
-                              !info.menFullSleeveTShirtCutAndStitch,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_cutandStitch"
-                        label="Cut and Stitch"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtCutAndStitchDesigner:
-                              !info.menFullSleeveTShirtCutAndStitchDesigner,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_cutandStitchDesigner"
-                        label="Cut and Stitch (Design)"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtRaglanDesigner:
-                              !info.menFullSleeveTShirtRaglanDesigner,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_raglanDesigner"
-                        label="Raglan (Designer)"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFullSleeveTShirtSports:
-                              !info.menFullSleeveTShirtSports,
-                          });
-                        }}
-                        type="checkbox"
-                        id="Full-Sleeve_T-Shirt_Sports"
-                        label="Sports"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men shirt  */}
-
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menShirt: !info.menShirt });
-                    }}
-                    type="checkbox"
-                    id="menShirt"
-                    label="Shirt"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menCasualShirt: !info.menCasualShirt,
-                          });
-                        }}
-                        type="checkbox"
-                        id="CasualShirt"
-                        label="Casual Shirt"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menFormalShirt: !info.menFormalShirt,
-                          });
-                        }}
-                        type="checkbox"
-                        id="FormalShirt"
-                        label="Formal Shirt"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men polo tshirt  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menPoloTShirt: !info.menPoloTShirt });
-                    }}
-                    type="checkbox"
-                    id="menPolo"
-                    label="Polo"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menPoloTShirtClassic: !info.menPoloTShirtClassic,
-                          });
-                        }}
-                        type="checkbox"
-                        id="classicPolo"
-                        label="Classic"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menPoloTShirtCutAndStitch:
-                              !info.menPoloTShirtCutAndStitch,
-                          });
-                        }}
-                        type="checkbox"
-                        id="cuntandstichPolo"
-                        label="Cut and Stitch"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menPoloTShirtPrinted: !info.menPoloTShirtPrinted,
-                          });
-                        }}
-                        type="checkbox"
-                        id="printedPolo"
-                        label="Printed"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men shorts  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menShorts: !info.menShorts });
-                    }}
-                    type="checkbox"
-                    id="menShort"
-                    label="Shorts"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menChinoShorts: !info.menChinoShorts,
-                          });
-                        }}
-                        type="checkbox"
-                        id="chinoShorts"
-                        label="Chino Shorts"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menSportsShorts: !info.menSportsShorts,
-                          });
-                        }}
-                        type="checkbox"
-                        id="sportShorts"
-                        label="Sports Shorts"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men underweare  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menUnderwear: !info.menUnderwear });
-                    }}
-                    type="checkbox"
-                    id="menUnderwear"
-                    label="Underwear"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menBoxerBrief: !info.menBoxerBrief,
-                          });
-                        }}
-                        type="checkbox"
-                        id="boxerBrief"
-                        label="Boxer Brief"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menBoxerShorts: !info.menBoxerShorts,
-                          });
-                        }}
-                        type="checkbox"
-                        id="boxerShort"
-                        label="Boxer Short"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({ ...info, menTrunk: !info.menTrunk });
-                        }}
-                        type="checkbox"
-                        id="boxerTrunk"
-                        label="Trunk"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menWovenShorts: !info.menWovenShorts,
-                          });
-                        }}
-                        type="checkbox"
-                        id="wovenshorts"
-                        label="Woven Shorts"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men shocks  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menSocks: !info.menSocks });
-                    }}
-                    type="checkbox"
-                    id="menSocks"
-                    label="Socks"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menSocksClassic: !info.menSocksClassic,
-                          });
-                        }}
-                        type="checkbox"
-                        id="classicSocks"
-                        label="Classic"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menSocksSports: !info.menSocksSports,
-                          });
-                        }}
-                        type="checkbox"
-                        id="SportsSocks"
-                        label="Sports"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({
-                            ...info,
-                            menSocksUrban: !info.menSocksUrban,
-                          });
-                        }}
-                        type="checkbox"
-                        id="UrbanSocks"
-                        label="Urban"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-
-              {/* men accesories  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        menAccesorries: !info.menAccesorries,
-                      });
-                    }}
-                    type="checkbox"
-                    id="menAccesories"
-                    label="Accessories"
-                  />
-                  {/* third level  */}
-                  <section className="ml-6">
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({ ...info, menBelt: !info.menBelt });
-                        }}
-                        type="checkbox"
-                        id="menBelt"
-                        label="Belt"
-                      />
-                    </ul>
-                    <ul>
-                      <CCheckRadio
-                        onChange={() => {
-                          setInfo({ ...info, menWallet: !info.menWallet });
-                        }}
-                        type="checkbox"
-                        id="menWallet"
-                        label="Wallet"
-                      />
-                    </ul>
-                  </section>
-                </ul>
-              </section>
-              {/* others mens  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menHoodie: !info.menHoodie });
-                    }}
-                    type="checkbox"
-                    id="Hoodie"
-                    label="Hoodie"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menJacket: !info.menJacket });
-                    }}
-                    type="checkbox"
-                    id="Jacket"
-                    label="Jacket"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menJoggers: !info.menJoggers });
-                    }}
-                    type="checkbox"
-                    id="Jogger"
-                    label="Jogger"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menJeans: !info.menJeans });
-                    }}
-                    type="checkbox"
-                    id="jeans"
-                    label="jeans"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menMaggie: !info.menMaggie });
-                    }}
-                    type="checkbox"
-                    id="Maggie"
-                    label="Maggie"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menPanjabi: !info.menPanjabi });
-                    }}
-                    type="checkbox"
-                    id="Panjabi"
-                    label="Panjabi"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menTupi: !info.menTupi });
-                    }}
-                    type="checkbox"
-                    id="Tupi"
-                    label="Tupi"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, menSweatshirt: !info.menSweatshirt });
-                    }}
-                    type="checkbox"
-                    id="SweatShirts"
-                    label="Sweat Shirts"
-                  />
-                </ul>
-              </section>
-            </ul>
-
-            {/* women  */}
-
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isWomen: !info.isWomen });
-                }}
-                type="checkbox"
-                id="Women"
-                label="Women"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, womenTShirt: !info.womenTShirt });
-                    }}
-                    type="checkbox"
-                    id="T-Shirt"
-                    label="T-Shirt"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        womenComfyTrouser: !info.womenComfyTrouser,
-                      });
-                    }}
-                    type="checkbox"
-                    id="Comfy trouser"
-                    label="Comfy trouser"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        womenKurtiTunicAndTops: !info.womenKurtiTunicAndTops,
-                      });
-                    }}
-                    type="checkbox"
-                    id="Kurti Tunic And Tops"
-                    label="Kurti Tunic And Tops"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, womenPajamas: !info.womenPajamas });
-                    }}
-                    type="checkbox"
-                    id="Pajamas"
-                    label="Pajamas"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, womenPants: !info.womenPants });
-                    }}
-                    type="checkbox"
-                    id="Pant"
-                    label="Pant"
-                  />
-                </ul>
-              </section>
-            </ul>
-
-            {/* kids  */}
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isKids: !info.isKids });
-                }}
-                type="checkbox"
-                id="Kids"
-                label="Kids"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        isKindsHalfSleeveTshirt: !info.isKindsHalfSleeveTshirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="kidsHalfSleeve"
-                    label="Half Sleeve T-Shirt"
-                  />
-                </ul>
-
-                {/* third level  */}
-                <section className="ml-6">
-                  <ul>
-                    <CCheckRadio
-                      onChange={() => {
-                        setInfo({
-                          ...info,
-                          kidsHalfSleeveTShirtBlank:
-                            !info.kidsHalfSleeveTShirtBlank,
-                        });
-                      }}
-                      type="checkbox"
-                      id="Kids_Half-Sleeve_T-Shirt_blank"
-                      label="blank"
-                    />
-                  </ul>
-                  <ul>
-                    <CCheckRadio
-                      onChange={() => {
-                        setInfo({
-                          ...info,
-                          kidsHalfSleeveTShirtPrinted:
-                            !info.kidsHalfSleeveTShirtPrinted,
-                        });
-                      }}
-                      type="checkbox"
-                      id="Kids_Half-Sleeve_T-Shirt_Printed"
-                      label="Printed"
-                    />
-                  </ul>
-                </section>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        isKindsHalfSleeveTshirt: !info.isKindsHalfSleeveTshirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="kidsFullSleeveTshirt"
-                    label="Full Sleeve T-Shirt"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, kidsMaggie: !info.kidsMaggie });
-                    }}
-                    type="checkbox"
-                    id="kidsMaggie"
-                    label="Maggie"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        kidsPoloTShirt: !info.kidsPoloTShirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="kidsPolo"
-                    label="Polo T-Shirt"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, kidsShorts: !info.kidsShorts });
-                    }}
-                    type="checkbox"
-                    id="kidsShorts"
-                    label="Shorts"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, kidsTrouser: !info.kidsTrouser });
-                    }}
-                    type="checkbox"
-                    id="kidsTrousers"
-                    label="Trouser"
-                  />
-                </ul>
-              </section>
-            </ul>
-            {/* face mask  */}
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isFaceMask: !info.isFaceMask });
-                }}
-                type="checkbox"
-                id="FaceMask"
-                label="Face Mask"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        faceMaskKidsMask: !info.faceMaskKidsMask,
-                      });
-                    }}
-                    type="checkbox"
-                    id="kidsMask"
-                    label="Kids Maks"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        faceMaskProfessional7LayerMask:
-                          !info.faceMaskProfessional7LayerMask,
-                      });
-                    }}
-                    type="checkbox"
-                    id="professionalMask"
-                    label="Professional 7 Layer Mask"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        faceMaskSportsEdition: !info.faceMaskSportsEdition,
-                      });
-                    }}
-                    type="checkbox"
-                    id="sportsEditionMask"
-                    label="Sports Edition"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        faceMaskWomensDesigner: !info.faceMaskWomensDesigner,
-                      });
-                    }}
-                    type="checkbox"
-                    id="womensDesigner"
-                    label="Womens Designer"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        faceMaskWomensEmbroidery:
-                          !info.faceMaskWomensEmbroidery,
-                      });
-                    }}
-                    type="checkbox"
-                    id="womensEmbroidery"
-                    label="Womens Embroidery"
-                  />
-                </ul>
-              </section>
-            </ul>
-            {/* sports  */}
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isSports: !info.isSports });
-                }}
-                type="checkbox"
-                id="Sports"
-                label="Sports"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        sportsFootballJersey: !info.sportsFootballJersey,
-                      });
-                    }}
-                    type="checkbox"
-                    id="footballJersey"
-                    label="Football Jersey"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({ ...info, sportsTShirts: !info.sportsTShirts });
-                    }}
-                    type="checkbox"
-                    id="sportsTShirts"
-                    label="Sports TShirts"
-                  />
-                </ul>
-              </section>
-            </ul>
-
-            {/* merchandise  */}
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({ ...info, isMerchandise: !info.isSports });
-                }}
-                type="checkbox"
-                id="Merchandise"
-                label="Merchandise"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        merchandiseAurthohin: !info.merchandiseAurthohin,
-                      });
-                    }}
-                    type="checkbox"
-                    id="aurthohin"
-                    label="Aurthohin"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        merchandiseGrameenphone: !info.merchandiseGrameenphone,
-                      });
-                    }}
-                    type="checkbox"
-                    id="grameenphone"
-                    label="Grameenphone"
-                  />
-                </ul>
-              </section>
-            </ul>
-            <ul>
-              <CCheckRadio
-                onChange={() => {
-                  setInfo({
-                    ...info,
-                    isWinterExclusive: !info.isWinterExclusive,
-                  });
-                }}
-                type="checkbox"
-                id="WinterExclisive"
-                label="Winter Exclisive"
-              />
-
-              {/* second level  */}
-              <section className="ml-6">
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        winterExclusiveFullSleeveTShirt:
-                          !info.winterExclusiveFullSleeveTShirt,
-                      });
-                    }}
-                    type="checkbox"
-                    id="winterfullSleeveTShirt"
-                    label="Full Sleeve T-Shirt"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        winterExclusiveHoodie: !info.winterExclusiveHoodie,
-                      });
-                    }}
-                    type="checkbox"
-                    id="winterhoodie"
-                    label="Hoodie"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        winterExclusiveJacket: !info.winterExclusiveJacket,
-                      });
-                    }}
-                    type="checkbox"
-                    id="winterjacket"
-                    label="Jacket"
-                  />
-                </ul>
-                <ul>
-                  <CCheckRadio
-                    onChange={() => {
-                      setInfo({
-                        ...info,
-                        winterExclusiveJoggers: !info.winterExclusiveJoggers,
-                      });
-                    }}
-                    type="checkbox"
-                    id="winterJoggers"
-                    label="Joggers"
-                  />
-                </ul>
-              </section>
-            </ul>
+                    {/* Subcategories */}
+                    <div
+                      className={`mt-2 pl-6 space-y-2 overflow-hidden transition-all duration-500 ease-in-out ${
+                        selectedCategory === category.value
+                          ? "max-h-[1400px] opacity-100 translate-y-0"
+                          : "max-h-0 opacity-0 -translate-y-2"
+                      }`}
+                    >
+                      {subcategories[category.value]?.map(
+                        (sub: any, idx: number) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleSubcategoryClick(sub)}
+                            className={`flex items-center justify-between w-full text-left px-3 py-2 rounded-lg border transition-all duration-300 ease-in-out ${
+                              selectedSubcategories.includes(sub)
+                                ? "bg-green-500 text-white border-green-600"
+                                : "bg-gray-100 text-gray-800 border-gray-300"
+                            } hover:shadow-md`}
+                          >
+                            <span>{sub}</span>
+                            {selectedSubcategories.includes(sub) ? (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2}
+                                stroke="currentColor"
+                                className="w-4 h-4 transition-transform duration-300 ease-in-out transform rotate-45"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M12 4.5v15m7.5-7.5h-15"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2}
+                                stroke="currentColor"
+                                className="w-4 h-4 transition-transform duration-300 ease-in-out transform rotate-0"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M12 4.5v15m7.5-7.5h-15"
+                                />
+                              </svg>
+                            )}
+                          </button>
+                        )
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

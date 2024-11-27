@@ -88,6 +88,7 @@ const AddProductForm: React.FC = () => {
     images: [],
     stock: 0,
   });
+  
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [addProduct,{isLoading, data}] = useAddProductMutation();
 

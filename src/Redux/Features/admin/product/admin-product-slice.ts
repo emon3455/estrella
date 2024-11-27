@@ -35,12 +35,21 @@ export const adminProductSlice = apiSlice.injectEndpoints({
       },
     }),
 
-    filterProduct: builder.mutation({
-      query: (data) => ({
-        url: "product/filter?searchText=",
-        method: "POST",
-        body: data,
-      }),
+
+
+    filterProduct: builder.query({
+      query: ({ category, subCategory }: { category?: string; subCategory?: string[] }) => {
+        const subCategoryQuery = subCategory?.length ? subCategory.join(",") : "";
+        const queryParams = new URLSearchParams({
+          ...(category && { category }),
+          ...(subCategoryQuery && { subCategory: subCategoryQuery }),
+        }).toString();
+    
+        return {
+          url: `/product/filter?${queryParams}`,
+          method: "GET",
+        };
+      },
     }),
 
     getSingleProduct: builder.query({
@@ -52,4 +61,4 @@ export const adminProductSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetSingleProductQuery, useFilterProductMutation, useAddProductMutation, useGetProductQuery, useDeleteProductMutation, useUpdateProductMutation } = adminProductSlice;
+export const { useGetSingleProductQuery, useFilterProductQuery, useAddProductMutation, useGetProductQuery, useDeleteProductMutation, useUpdateProductMutation } = adminProductSlice;

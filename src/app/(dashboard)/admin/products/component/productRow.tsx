@@ -8,6 +8,7 @@ const ProductRow = () => {
 
   const { isLoading, isSuccess, data, isError, error: productError, refetch } = useGetProductQuery({} as any);
 
+  
   return (
     // <div>This is product page</div>
     <CCard title="Products OF ESTRELLA">

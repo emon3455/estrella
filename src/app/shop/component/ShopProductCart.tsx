@@ -14,6 +14,7 @@ const ShopProductCart = ({ data: product }: any) => {
   const [counter, setCounter] = useState(1);
   const [tabs, setTab] = useState("");
 
+
   const handleCounter = () => {
     if (product?.generalSize?.[tabs] > counter) {
       setCounter(counter + 1);

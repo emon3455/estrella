@@ -49,20 +49,20 @@ const MainHome = () => {
   const [menSports, setMenSports] = useState<any[]>([]);
   const [menMask, setMenMask] = useState<any[]>([]);
 
-  const [filterProduct] = useFilterProductMutation();
+  // const [filterProduct] = useFilterProductMutation();
 
-  useEffect(() => {
-    const fetchFilteredProducts = async () => {
-      try {
-        const filterData = await filterProduct({}).unwrap();
-        setData(filterData.products);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchFilteredProducts = async () => {
+  //     try {
+  //       const filterData = await filterProduct({}).unwrap();
+  //       setData(filterData.products);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
 
-    fetchFilteredProducts();
-  }, [filterProduct]);
+  //   fetchFilteredProducts();
+  // }, [filterProduct]);
 
   useEffect(() => {
     const menFull1 = data.filter((item) => item?.menFullSleeveTShirtBlank);
