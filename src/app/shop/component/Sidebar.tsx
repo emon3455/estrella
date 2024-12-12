@@ -4,41 +4,43 @@ import React, { useState } from "react";
 
 const Sidebar = () => {
   const categories = [
-    { value: "", label: "All Products" },
-    { value: "Men", label: "Men" },
-    { value: "Women", label: "Women" },
-    { value: "Kids", label: "Kids" },
-    { value: "Bulk Order", label: "Bulk Order" },
+    { value: "men", label: "Men" },
+    { value: "women", label: "Women" },
+    { value: "kids", label: "Kids" },
+    { value: "bulk_order", label: "Bulk Order" },
   ];
 
+
+  
   const subcategories = {
-    Men: [
-      "Short sleeve t-shirt",
-      "Long sleeve t-shirt",
-      "Polo shirt",
-      "Sports jersey",
-      "Dress shirt",
-      "Casual shirt",
-      "Katua",
-      "Panjabi",
-      "Pajama",
-      "Trouser",
-      "Cargo pant",
-      "Under wear",
-      "Tank top",
-      "Sweat shirt",
-      "Hoodie",
+    men: [
+      "short_sleeve_t_shirt",
+      "long_sleeve_t_shirt",
+      "polo_shirt",
+      "sports_jersey",
+      "dress_shirt",
+      "casual_shirt",
+      "katua",
+      "panjabi",
+      "pajama",
+      "trouser",
+      "cargo_pant",
+      "under_wear",
+      "tank_top",
+      "sweat_shirt",
+      "hoodie",
     ],
-    Women: ["Comfy top bottom set", "Kurti, Tunic, & Tops"],
+    women: ["comfy_top_bottom_set", "kurti_tunic_tops"],
     Kids: [
-      "Top bottom set",
-      "T-shirt",
-      "Polo shirt",
-      "Sleeve less t-shirt",
-      "3quarter shorts",
-      "Trouser",
+      "top_bottom_set",
+      "t_shirt",
+      "polo_shirt",
+      "sleeve_less_t_shirt",
+      "3_quarter_shorts",
+      "trouser",
     ],
-    "Bulk Order": ["Bulk Order"],
+    "bulk_order": ["bulk_order"],
+  
   } as Record<string, string[]>;
 
   const [selectedCategory, setSelectedCategory] = useState<string>("");

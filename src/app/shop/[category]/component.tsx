@@ -9,44 +9,50 @@ import Loading from "@/app/loading";
 import NoProduct from "../../../shared/NoProduct";
 import { useFilterProductQuery } from "@/Redux/Features/admin/product/admin-product-slice";
 
+
 const DynamicCategoryComponent = ({category}  : any) => {
   
 
 
   const { data, isLoading, error, refetch } = useFilterProductQuery(
     {
-      category: category ?? "",
-      
+      category: category ?? '',
     }
-    
-  );
-  console.log(data);
-  
-  return (
-    <div>
-      {/* {isLoading ? (
-        <h2>
-          <Loading />
-        </h2>
-      ) : (
-        <div className="h-screen ">
-          {data.length == 0 ? (
-            <div>
-              <h2>
-                <NoProduct />
-              </h2>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 my-8 mx-8">
-              {data.map((data: any, idx: number) => (
-                <ShopProductCart key={idx} data={data} Loading={isLoading} />
-              ))}
-            </div>
-          )}
-        </div>
-      )} */}
-    </div>
-  );
-};
 
+  );
+  console.log({ data, isLoading, error });
+return (
+    <div>
+
+        <h1></h1>
+          {isLoading ? (
+      <h2 className=" w-full mx-auto">
+        <Loading />
+      </h2>
+    ) : (
+      <div className="h-screen ">
+        {data?.length == 0 ? (
+          <div className=" w-full mx-auto">
+            <h2>
+              <NoProduct />
+            </h2>
+          </div>
+        ) : (
+          <div className=" max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 my-8 mx-8">
+            {data?.products?.map((data: any) => (
+              <ShopProductCart
+                key={data._id}
+                data={data}
+                Loading={isLoading}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    )}
+    </div>
+);
+};
 export default DynamicCategoryComponent;
+
+

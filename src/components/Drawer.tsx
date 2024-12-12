@@ -56,13 +56,13 @@ const Drawer = () => {
             ],
        // No subcategories for now
         },
-        {
-            name: "Bulk Order",
-            items: [
-                { name: "Bulk Order", href: "#" },                
-                // Add more items here
-            ],
-        },
+        // {
+        //     name: "Bulk Order",
+        //     items: [
+        //         { name: "Bulk Order", href: "#" },                
+        //         // Add more items here
+        //     ],
+        // },
        
     ];
 

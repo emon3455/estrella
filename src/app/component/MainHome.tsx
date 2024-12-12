@@ -1,6 +1,6 @@
 "use client";
 
-import { useFilterProductMutation } from "@/Redux/Features/admin/product/admin-product-slice";
+
 import { useEffect, useState } from "react";
 import Banner from "./Banner";
 import Link from "next/link";
@@ -86,10 +86,10 @@ const MainHome = () => {
           {" "}
           <p>SHOP NOW</p>
         </Link>
-        <Link href={`/shop/isMen`}>
+        <Link href={`/shop/men`}>
           <p>MEN</p>
         </Link>
-        <Link href={"/shop/isWomen"}>
+        <Link href={"/shop/women"}>
           {" "}
           <p>WOMEN</p>
         </Link>
@@ -118,7 +118,7 @@ const MainHome = () => {
           ))}
         </div>
 
-        <div className="flex flex-col items-center md:flex-row m-4 gap-4 ">
+        {/* <div className="flex flex-col items-center md:flex-row m-4 gap-4 ">
           <div className="w-full md:w-1/3 ">
             <TopCategoryCard data={men} />
           </div>
@@ -131,7 +131,7 @@ const MainHome = () => {
               <ViewMoreCard image={men.image} data={"men"} />
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* tag line section  */}
 
@@ -156,7 +156,7 @@ const MainHome = () => {
 
         {/* mens jacket category  */}
 
-        <div className="flex flex-col items-center md:flex-row m-4 gap-4 ">
+        {/* <div className="flex flex-col items-center md:flex-row m-4 gap-4 ">
           <div className="w-full md:w-1/3 ">
             <TopCategoryCard data={menJacket} />
           </div>
@@ -169,7 +169,7 @@ const MainHome = () => {
               <ViewMoreCard image={menJacket.image} data={"menjacket"} />
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* second three category  */}
 
@@ -181,7 +181,7 @@ const MainHome = () => {
 
         {/* mens full sleeve category  */}
 
-        <div className="flex flex-col items-center md:flex-row m-4 gap-4 ">
+        {/* <div className="flex flex-col items-center md:flex-row m-4 gap-4 ">
           <div className="w-full md:w-1/3 ">
             <TopCategoryCard data={mensShort} />
           </div>
@@ -194,7 +194,7 @@ const MainHome = () => {
               <ViewMoreCard image={mensShort.image} data={"menshort"} />
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* third three category  */}
 
@@ -206,7 +206,7 @@ const MainHome = () => {
 
         {/* sports tshirt category  */}
 
-        <div className="flex flex-col items-center md:flex-row m-4 gap-4 ">
+        {/* <div className="flex flex-col items-center md:flex-row m-4 gap-4 ">
           <div className="w-full md:w-1/3 ">
             <TopCategoryCard data={sportsTshirt} />
           </div>
@@ -219,11 +219,11 @@ const MainHome = () => {
               <ViewMoreCard image={men.image} data={"sports_tshirt"} />
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* face mask category  */}
 
-        <div className="flex items-center flex-col md:flex-row m-4 gap-4 ">
+        {/* <div className="flex items-center flex-col md:flex-row m-4 gap-4 ">
           <div className="w-full md:w-1/3 ">
             <TopCategoryCard data={mask} />
           </div>
@@ -236,7 +236,7 @@ const MainHome = () => {
               <ViewMoreCard image={men.image} data={"sports_tshirt"} />
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* premium section  */}
 

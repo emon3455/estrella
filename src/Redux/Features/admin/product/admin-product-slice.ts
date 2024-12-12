@@ -38,8 +38,18 @@ export const adminProductSlice = apiSlice.injectEndpoints({
 
 
     filterProduct: builder.query({
-      query: ({ category, subCategory }: { category?: string; subCategory?: string[] }) => {
-        const subCategoryQuery = subCategory?.length ? subCategory.join(",") : "";
+      query: ({ category, subCategory }: { category?: string; subCategory?: string | string[] }) => {
+        // Ensure subCategory is always an array
+        const subCategoryArray = Array.isArray(subCategory)
+          ? subCategory
+          : subCategory
+          ? [subCategory] // Wrap single string in an array
+          : []; // Default to empty array
+    
+        // Join the subCategory array into a string
+        const subCategoryQuery = subCategoryArray.length ? subCategoryArray.join(",") : "";
+    
+        // Construct query params
         const queryParams = new URLSearchParams({
           ...(category && { category }),
           ...(subCategoryQuery && { subCategory: subCategoryQuery }),
@@ -51,6 +61,7 @@ export const adminProductSlice = apiSlice.injectEndpoints({
         };
       },
     }),
+    
 
     getSingleProduct: builder.query({
       query: (id:any) => ({

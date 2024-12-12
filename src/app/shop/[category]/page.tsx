@@ -13,7 +13,7 @@ const DynamicCategoryPage = ({ params }: any) => {
   return (
     <div>
     <DynamicCategoryComponent category={params?.category}/>
-    <h2>{params?.category}</h2>
+   
 
 
     </div>

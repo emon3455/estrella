@@ -7,20 +7,22 @@ import { useState } from "react";
 import { FaMinus, FaPlaneSlash, FaPlus } from "react-icons/fa";
 import table from "../../../assets/table.png";
 const ProductDetailsCard = ({ product }: any) => {
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(product?.images[0] || '');
   const [tabs, setTab] = useState("");
   const [counter, setCounter] = useState(1);
+
+  console.log(image)
 
   console.log(product)
 
   const handleCounter = () => {
-    if (product?.generalsize?.[tabs] > counter) {
+    if (product?.generalSize?.[tabs] > counter) {
       setCounter(counter + 1);
     } else {
       cToastify({
         type: "warn",
         message: `You selected ${tabs.toUpperCase()} size that has only ${
-          product?.generalsize?.[tabs]
+          product?.generalSize?.[tabs]
         } product available right now`,
       });
     }
@@ -57,11 +59,15 @@ const ProductDetailsCard = ({ product }: any) => {
         <div>
           <Image
             className=" w-full md:w-3/4 mx-auto"
-            src={product?.images[0]}
+            src={image}
             height={800}
             width={800}
             alt="image"
           />
+
+          <div>
+            
+          </div>
         </div>
 
         {/* right side  */}
@@ -81,7 +87,7 @@ const ProductDetailsCard = ({ product }: any) => {
             {/* size  */}
 
             <ul className="flex gap-2 justify-start  my-2 font-semibold uppercase text-lg ">
-              {product?.generalsize?.s >= counter ? (
+              {product?.generalSize?.s >= counter ? (
                 <button
                   className={
                     tabs === "s"
@@ -100,7 +106,7 @@ const ProductDetailsCard = ({ product }: any) => {
                   S
                 </button>
               )}
-              {product?.generalsize?.m >= counter ? (
+              {product?.generalSize?.m >= counter ? (
                 <button
                   className={
                     tabs === "m"
@@ -119,7 +125,7 @@ const ProductDetailsCard = ({ product }: any) => {
                   M
                 </button>
               )}
-              {product?.generalsize?.l >= counter ? (
+              {product?.generalSize?.l >= counter ? (
                 <button
                   className={
                     tabs === "l"
@@ -138,7 +144,7 @@ const ProductDetailsCard = ({ product }: any) => {
                   L
                 </button>
               )}
-              {product?.generalsize?.xl >= counter ? (
+              {product?.generalSize?.xl >= counter ? (
                 <button
                   className={
                     tabs === "xl"
@@ -157,7 +163,7 @@ const ProductDetailsCard = ({ product }: any) => {
                   XL
                 </button>
               )}
-              {product?.generalsize?.xxl > counter ? (
+              {product?.generalSize?.xxl > counter ? (
                 <button
                   className={
                     tabs === "xxl"

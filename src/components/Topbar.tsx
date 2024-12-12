@@ -27,91 +27,91 @@ const Topbar = () => {
               <h1 className=" uppercase  text-black font-bold">Men</h1>
               <Link
                 className=" text-black  transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop"}
+                href={"/shop/men/short_sleeve_t_shirt"}
               >
                 Short sleeve t-shirt
               </Link>
               <Link
                 className=" text-black  transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop"}
+                href={"/shop/men/long_sleeve_t_shirt"}
               >
                Long sleeve t-shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop"}
+                href={"/shop/men/polo_shirt"}
               >
                Polo shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop"}
+                href={"/shop/men/sports_jersey"}
               >
                 Sports jersey
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop"}
+                href={"/shop/men/dress_shirt"}
               >
                 Dress shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop"}
+                href={"/shop/men/casual_shirt"}
               >
                 Casual shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop"}
+                href={"/shop/men/katua"}
               >
                 Katua
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/men/panjabi"}
               >
                 Panjabi
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop"}
+                href={"/shop/men/pajama"}
               >
                Pajama
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/men/trouser"}
               >
                 Trouser
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/men/cargo_pant"}
               >
                 Cargo pant
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/men/under_wear"}
               >
                 Under wear
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/men/tank_top"}
               >
                Tank top
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/men/sweat_shirt"}
               >
                 Sweat shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/men/hoodie"}
               >
                 Hoodie 
               </Link>
@@ -121,13 +121,13 @@ const Topbar = () => {
               <h1 className=" uppercase  text-black font-bold">Women</h1>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/women/comfy_top_bottom_set"}
               >
                 Comfy top bottom set
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/women/kurti_tunic_tops"}
               >
                 Kurti, Tunic, & Tops 
               </Link>
@@ -137,37 +137,37 @@ const Topbar = () => {
               <h1 className=" uppercase  text-black font-bold">Kids</h1>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/kids/top_bottom_set"}
               >
               Top bottom set
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/kids/t_shirt"}
               >
                 T-shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/kids/polo_shirt"}
               >
                 Polo shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/kids/sleeve_less_t_shirt"}
               >
                 Sleeve less t-shirt
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/kids/3_quarter_shorts"}
               >
                3 Quarter shorts
               </Link>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/shop/kids/trouser"}
               >
                Trouser
               </Link>
@@ -177,7 +177,7 @@ const Topbar = () => {
               <h1 className=" uppercase  text-black font-bold">Bulk</h1>
               <Link
                 className=" text-black transform duration-300 hover:text-sky-500 hover:font-semibold"
-                href={"/shop/"}
+                href={"/corporate"}
               >
                 Order Bulk Now 
               </Link>
